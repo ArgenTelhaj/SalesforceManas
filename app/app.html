@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SalesforceManas</title>
+  <link rel="icon" href="../icons/icon32.png" />
+  <link rel="stylesheet" href="../shared/base.css" />
+</head>
+<body class="workspace">
+  <header class="topbar">
+    <div class="brand">
+      <img src="../icons/icon32.png" alt="" width="20" height="20" />
+      <span>SalesforceManas</span>
+    </div>
+    <div class="org" id="org-chip" hidden>
+      <span class="org-name" id="org-name"></span>
+      <span class="badge" id="env-badge"></span>
+    </div>
+  </header>
+
+  <div class="empty" id="no-org" hidden>
+    <p class="empty-title">No Salesforce org to work with</p>
+    <p class="muted" id="no-org-detail">Open the workspace from the SalesforceManas launcher on a Salesforce page.</p>
+  </div>
+
+  <div id="app" hidden>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="record">Record</button>
+      <button role="tab" data-tab="access">Access</button>
+      <button role="tab" data-tab="soql">SOQL</button>
+      <button role="tab" data-tab="import">Import</button>
+      <button role="tab" data-tab="logs">Logs</button>
+      <button role="tab" data-tab="org">Org</button>
+    </nav>
+
+    <!-- Record -->
+    <section class="panel" data-panel="record">
+      <form class="row" id="goto-form">
+        <input id="goto-id" placeholder="Paste a record Id to inspect it" autocomplete="off" spellcheck="false" />
+        <button class="btn" type="submit">Inspect</button>
+      </form>
+      <div class="muted" id="record-none">Paste a record Id above, or open the workspace from a record page.</div>
+      <div id="record-view" hidden>
+        <div class="record-head">
+          <div>
+            <div class="record-object" id="record-object"></div>
+            <div class="record-id">
+              <code id="record-id"></code>
+              <button class="link-btn" id="copy-id15">Copy 15</button>
+              <button class="link-btn" id="copy-id18">Copy 18</button>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn secondary" id="open-record">Open record</button>
+            <button class="btn secondary" id="open-object-manager">Object Manager</button>
+          </div>
+        </div>
+        <div class="row">
+          <input id="field-filter" placeholder="Filter fields by label, API name or value" autocomplete="off" />
+          <label class="check"><input type="checkbox" id="hide-empty" checked /> Hide empty</label>
+          <label class="check"><input type="checkbox" id="only-editable" /> Editable only</label>
+        </div>
+        <p class="hint">Double-click a value (or click ✎) to edit it. Enter keeps the change, Esc cancels; nothing is saved until you click Save.</p>
+        <div class="loading" id="record-loading">Loading fields…</div>
+        <div class="error" id="record-error" hidden></div>
+        <div class="table-wrap"><table class="grid" id="field-table" hidden>
+          <thead><tr><th>Label</th><th>API name</th><th>Value</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <div class="savebar" id="record-savebar" hidden>
+          <span id="record-changes"></span>
+          <span class="spacer"></span>
+          <button class="link-btn" id="record-discard">Discard</button>
+          <button class="btn" id="record-save">Save</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Access -->
+    <section class="panel" data-panel="access">
+      <div class="row">
+        <label class="field-label" for="access-object">Object</label>
+        <input id="access-object" list="access-objects" placeholder="Object API name, e.g. Account" autocomplete="off" spellcheck="false" />
+        <datalist id="access-objects"></datalist>
+      </div>
+      <div class="segmented" id="access-mode" role="tablist">
+        <button data-mode="object" title="Create, Read, Edit, Delete, View All, Modify All for each profile and permission set">Object access</button>
+        <button data-mode="fields" title="Field-level security for every field, for one profile or permission set">Fields by set</button>
+        <button data-mode="field" title="Field-level security for one field, across all profiles and permission sets">One field</button>
+        <button data-mode="bulk" title="Set access for many fields on many profiles and permission sets at once">Bulk fields</button>
+        <button data-mode="user" title="A user's combined access from their profile, permission sets and groups">User access</button>
+        <button data-mode="compare" title="Two profiles or permission sets side by side">Compare</button>
+      </div>
+
+      <!-- Editable grid views: object, fields, field -->
+      <div id="access-grid-view">
+        <div class="row" id="access-target-row" hidden>
+          <input id="access-target" autocomplete="off" spellcheck="false" />
+          <datalist id="access-targets"></datalist>
+        </div>
+        <div class="row" id="access-filter-row" hidden>
+          <input id="access-filter" placeholder="Filter…" autocomplete="off" />
+          <select id="access-kind">
+            <option value="all">All</option>
+            <option value="profile">Profiles</option>
+            <option value="permset">Permission sets</option>
+          </select>
+          <label class="check"><input type="checkbox" id="access-granted" /> With access</label>
+        </div>
+        <p class="hint" id="access-hint"></p>
+        <div class="loading" id="access-loading" hidden>Loading…</div>
+        <div class="error" id="access-error" hidden></div>
+        <div class="table-wrap"><table class="grid access-grid" id="access-table" hidden><thead></thead><tbody></tbody></table></div>
+        <div class="savebar" id="access-savebar" hidden>
+          <span id="access-changes"></span>
+          <span class="spacer"></span>
+          <button class="link-btn" id="access-discard">Discard</button>
+          <button class="btn" id="access-save">Review &amp; save</button>
+        </div>
+      </div>
+
+      <!-- Views that build their own UI: bulk, user, compare -->
+      <div id="access-custom-view" hidden></div>
+    </section>
+
+    <!-- SOQL -->
+    <section class="panel" data-panel="soql">
+      <div class="soql-editor">
+        <textarea id="soql-input" spellcheck="false" placeholder="SELECT Id, Name FROM Account ORDER BY CreatedDate DESC LIMIT 10"></textarea>
+      </div>
+      <p class="hint">Fields are suggested once the query has <code>FROM &lt;Object&gt;</code>. Ctrl+Space shows suggestions, Enter or Tab accepts, ⌘/Ctrl+Enter runs.</p>
+      <div class="row">
+        <label class="check"><input type="checkbox" id="soql-tooling" /> Tooling API</label>
+        <label class="check"><input type="checkbox" id="soql-all" /> Include deleted</label>
+        <select id="soql-history"><option value="">History…</option></select>
+        <span class="spacer"></span>
+        <button class="btn" id="soql-run" title="Run (Ctrl/⌘+Enter)">Run</button>
+      </div>
+      <div class="error" id="soql-error" hidden></div>
+      <div class="result-bar" id="soql-bar" hidden>
+        <span id="soql-summary"></span>
+        <span class="spacer"></span>
+        <button class="link-btn" id="soql-copy">Copy CSV</button>
+        <button class="link-btn" id="soql-download">Download CSV</button>
+        <button class="btn secondary small" id="soql-edit">Edit</button>
+      </div>
+      <div class="edit-bar" id="soql-edit-bar" hidden>
+        <label class="check" id="soql-select-all-wrap"><input type="checkbox" id="soql-select-all" /> All rows</label>
+        <span class="muted" id="soql-selected-count"></span>
+        <span class="edit-bar-sep"></span>
+        <span>Set</span>
+        <select id="soql-bulk-field"></select>
+        <span>to</span>
+        <span id="soql-bulk-value" class="bulk-value"></span>
+        <button class="btn small" id="soql-apply-selected">On selected</button>
+        <button class="btn small secondary" id="soql-apply-all">On all rows</button>
+        <span class="spacer"></span>
+        <button class="btn small danger-btn" id="soql-delete-selected" title="Mark the selected rows for deletion (click again to unmark)">Delete selected</button>
+      </div>
+      <div class="table-wrap"><table class="grid" id="soql-table" hidden><thead></thead><tbody></tbody></table></div>
+      <div class="savebar" id="soql-savebar" hidden>
+        <span id="soql-changes"></span>
+        <span class="spacer"></span>
+        <button class="link-btn" id="soql-discard">Discard</button>
+        <button class="btn" id="soql-save">Review &amp; save</button>
+      </div>
+    </section>
+
+    <!-- Import -->
+    <section class="panel" data-panel="import">
+      <div id="import-root"></div>
+    </section>
+
+    <!-- Debug logs -->
+    <section class="panel" data-panel="logs">
+      <div id="logs-root"></div>
+    </section>
+
+    <!-- Org -->
+    <section class="panel" data-panel="org">
+      <div class="loading" id="org-loading">Loading org details…</div>
+      <div class="error" id="org-error" hidden></div>
+      <div id="org-details" class="org-columns" hidden>
+        <div>
+          <h3>Organization</h3>
+          <dl class="kv" id="org-kv"></dl>
+          <h3>Current user</h3>
+          <dl class="kv" id="user-kv"></dl>
+        </div>
+        <div>
+          <h3>Limits</h3>
+          <div id="limits"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

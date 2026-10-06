@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "SalesforceManas",
+  "short_name": "SFManas",
+  "version": "0.7.0",
+  "description": "Day-to-day toolkit for Salesforce admins and developers: access manager, user access check, record inspector, SOQL and quick navigation.",
+  "permissions": ["cookies", "storage"],
+  "host_permissions": [
+    "https://*.salesforce.com/*",
+    "https://*.force.com/*",
+    "https://*.salesforce-setup.com/*",
+    "https://*.visualforce.com/*"
+  ],
+  "action": {
+    "default_title": "SalesforceManas",
+    "default_popup": "launcher/launcher.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.lightning.force.com/*",
+        "https://*.my.salesforce.com/*",
+        "https://*.my.salesforce-setup.com/*"
+      ],
+      "js": ["content/sidetab.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["launcher/*", "shared/*", "lib/*", "icons/*"],
+      "matches": [
+        "https://*.lightning.force.com/*",
+        "https://*.my.salesforce.com/*",
+        "https://*.my.salesforce-setup.com/*"
+      ]
+    }
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": { "default": "Ctrl+Shift+M", "mac": "Command+Shift+M" },
+      "description": "Open SalesforceManas"
+    }
+  }
+}

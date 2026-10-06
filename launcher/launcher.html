@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SalesforceManas</title>
+  <link rel="stylesheet" href="../shared/base.css" />
+</head>
+<body class="launcher">
+  <header class="topbar">
+    <div class="brand">
+      <img src="../icons/icon32.png" alt="" width="20" height="20" />
+      <span>SalesforceManas</span>
+    </div>
+    <div class="org" id="org-chip" hidden>
+      <span class="org-name" id="org-name"></span>
+      <span class="badge" id="env-badge"></span>
+    </div>
+    <button class="icon-btn" id="close" title="Close (Esc)" aria-label="Close" hidden>
+      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <div class="empty" id="no-org" hidden>
+    <p class="empty-title">No Salesforce org in this tab</p>
+    <p class="muted" id="no-org-detail">Open a Salesforce page and try again.</p>
+  </div>
+
+  <main id="launcher" hidden>
+    <div class="l-search">
+      <svg class="l-search-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="nav-search" placeholder="Search Setup, objects, tools, recent records…" autocomplete="off" spellcheck="false"
+             role="combobox" aria-expanded="false" aria-controls="nav-results" aria-autocomplete="list" />
+      <kbd class="l-kbd" id="nav-kbd" hidden>↵</kbd>
+    </div>
+
+    <div id="nav-panel" class="l-results-panel" hidden>
+      <div id="nav-results" class="l-results" role="listbox"></div>
+      <p class="l-results-hint muted" id="nav-hint"><kbd>↑</kbd><kbd>↓</kbd> move · <kbd>↵</kbd> new tab · <kbd>⇧</kbd><kbd>↵</kbd> this tab · <kbd>Esc</kbd> clear</p>
+    </div>
+
+    <div id="home">
+      <section class="l-context">
+        <nav class="l-tabs" role="tablist">
+          <button role="tab" data-ctx="record">Record</button>
+          <button role="tab" data-ctx="layout">Layout</button>
+          <button role="tab" data-ctx="me">Me</button>
+        </nav>
+        <div class="l-pane" data-pane="record"></div>
+        <div class="l-pane" data-pane="layout" hidden></div>
+        <div class="l-pane" data-pane="me" hidden></div>
+      </section>
+
+      <section class="l-section">
+        <h3>Tools <span class="l-note">open in a new tab</span></h3>
+        <div class="l-tools">
+          <div class="l-tool-group">
+            <span class="l-group-label">Access</span>
+            <button class="l-tool" data-open="access" title="Object permissions and field-level security for every profile and permission set">Object &amp; field access</button>
+            <button class="l-tool" data-open="user" title="What one user can do, and which profile or permission set grants it">User access</button>
+            <button class="l-tool" data-open="bulk" title="Give many fields Read/Edit on many profiles and permission sets at once">Bulk field access</button>
+            <button class="l-tool" data-open="compare" title="Two profiles or permission sets side by side">Compare</button>
+          </div>
+          <div class="l-tool-group">
+            <span class="l-group-label">Data &amp; dev</span>
+            <button class="l-tool" data-open="soql" title="Query, export to CSV and mass edit">SOQL</button>
+            <button class="l-tool" data-open="import" title="Insert, update or delete from CSV or pasted cells">Data import</button>
+            <button class="l-tool" data-open="record" title="Every field of a record, with inline edit">Record inspector</button>
+            <button class="l-tool" data-open="logs" title="Trace yourself in one click and read Apex debug logs">Debug logs</button>
+            <button class="l-tool" data-open="org" title="Org details and usage of the main limits">Org &amp; limits</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="l-footer" id="footer" hidden>
+    <label class="check"><input type="checkbox" id="side-tab-toggle" /> Side tab on Salesforce pages</label>
+  </footer>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script type="module" src="launcher.js"></script>
+</body>
+</html>
